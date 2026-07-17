@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Builders Digest — 2026-07-16</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2d3a;
+    --accent: #6366f1;
+    --accent-soft: #818cf8;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --tag-bg: #1e2235;
+    --pink: #f472b6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 0 0 80px;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 20px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .header .date { font-size: 13px; color: var(--text-muted); }
+  .stats-bar {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .stat { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+  .stat span { color: var(--accent-soft); font-weight: 600; }
+  .main { max-width: 720px; margin: 0 auto; padding: 24px 20px 0; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 16px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--accent-soft);
+    text-transform: uppercase;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: #3a3d50; }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .author { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .avatar.green { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+  .avatar.orange { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+  .avatar.pink { background: linear-gradient(135deg, #be185d 0%, #ec4899 100%); }
+  .avatar.teal { background: linear-gradient(135deg, #0e7490 0%, #06b6d4 100%); }
+  .author-info { line-height: 1.3; }
+  .author-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .author-role { font-size: 12px; color: var(--text-muted); }
+  .card-body { font-size: 14px; color: var(--text); line-height: 1.7; }
+  .card-body p { margin-bottom: 8px; }
+  .card-body p:last-child { margin-bottom: 0; }
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--accent-soft);
+    text-decoration: none;
+    margin-top: 10px;
+    padding: 4px 10px;
+    background: var(--tag-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .source-link:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .links-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .podcast-card {
+    background: linear-gradient(135deg, #1a1d27 0%, #1e2235 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .podcast-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 10px;
+  }
+  .podcast-show { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .podcast-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
+  .takeaway {
+    background: rgba(99,102,241,0.1);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-soft);
+    line-height: 1.5;
+  }
+  .podcast-body { font-size: 14px; line-height: 1.75; color: var(--text); }
+  .podcast-body p { margin-bottom: 10px; }
+  .quote {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--yellow);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-style: italic;
+    font-size: 14px;
+    color: #e2e8f0cc;
+    line-height: 1.6;
+  }
+  .footer {
+    max-width: 720px;
+    margin: 48px auto 0;
+    padding: 0 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .footer a { color: var(--accent-soft); text-decoration: none; }
+  .hot-badge {
+    font-size: 10px;
+    background: rgba(251,191,36,0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .new-badge {
+    font-size: 10px;
+    background: rgba(52,211,153,0.15);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .essay-badge {
+    font-size: 10px;
+    background: rgba(244,114,182,0.15);
+    color: var(--pink);
+    border: 1px solid rgba(244,114,182,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .block-quote {
+    background: rgba(244,114,182,0.07);
+    border-left: 3px solid var(--pink);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    color: #e2e8f0cc;
+    line-height: 1.65;
+    font-style: italic;
+  }
+  @media (max-width: 500px) {
+    .header { padding: 18px 16px 14px; }
+    .main { padding: 16px 16px 0; }
+    .card { padding: 14px 16px; }
+    .podcast-card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>AI Builders Digest</h1>
+    <span class="date">2026年7月16日</span>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">追踪 <span>15</span> 位 builder</div>
+    <div class="stat">推文 <span>39</span> 条</div>
+    <div class="stat">播客 <span>1</span> 期</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- X / TWITTER -->
+  <div class="section-header">
+    <span class="section-label">X / Twitter</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Sam Altman -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar orange">SA</div>
+        <div class="author-info">
+          <div class="author-name">Sam Altman <span class="hot-badge">HOT</span></div>
+          <div class="author-role">OpenAI CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>GPT-5.6 Sol 的增长速度已经超出预期。他写道："推理团队做了英雄级的工作来支撑这个需求量，但仍有可能很快出现一些抖动。"这是一个难得的公开承认：增长已超过基础设施扩容速度。</p>
+      <p>另一条"also, a reason to favor open-source harnesses"措辞简洁，结合上下文是在暗示：封闭 harness 存在被悄悄修改/降级的风险，开源 harness 更可信赖。这是继昨日暗讽 Anthropic 之后的延续性观点。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/sama/status/2077106587307798989" class="source-link">↗ 5.6 Sol 增长与基础设施</a>
+      <a href="https://x.com/sama/status/2077053226080436235" class="source-link">↗ 支持开源 harness</a>
+    </div>
+  </div>
+
+  <!-- Thibault Sottiaux -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">TS</div>
+        <div class="author-info">
+          <div class="author-name">Thibault Sottiaux <span class="hot-badge">9M</span></div>
+          <div class="author-role">Codex & ChatGPT，OpenAI</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>昨天确认 ChatGPT Work 达到 8000 万活跃用户，今天又说"可能很快就要到 9000 万了"，并发起一波用户激励：分享你喜欢 GPT-5.6 Sol 的理由或转用心得，前 10000 人获得价值 100 美元的 Codex 用量。截至发推已收到近 6000 条回复。</p>
+      <p>他还在 X 上公开收集 ChatGPT Work 产品反馈，并澄清并非在宣布重置用量，只是在看用户怎么说。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/thsottiaux/status/2077271889626706300" class="source-link">↗ 逼近 9M 用户</a>
+      <a href="https://x.com/thsottiaux/status/2077248807533003257" class="source-link">↗ $100 Codex 用量活动</a>
+      <a href="https://x.com/thsottiaux/status/2077212009071075330" class="source-link">↗ ChatGPT Work 产品反馈</a>
+    </div>
+  </div>
+
+  <!-- Aaron Levie -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar teal">AL</div>
+        <div class="author-info">
+          <div class="author-name">Aaron Levie</div>
+          <div class="author-role">Box CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>分享了一个关于 AI agents 与代码的深刻洞察：代码之所以成为 AI 最先突破的领域，关键在于它可以被快速测试。你可以手动验证应用是否正常运行，也可以跑一段测试。但大多数其他工作领域都没有这个优势，只有当"成品"进入真实世界时才能知道结果——交易被执行、合同被谈判、销售演讲被接受。</p>
+      <p>他的结论：企业需要为自己的知识工作建立 evals，能把知识工作 eval 做得最好的企业，将从 AI 中获益最多。这将成为 agent 大规模落地的关键门槛。</p>
+      <p>另一条推文支持了一个 AI 标准机构提案，认为它比监管机构更好，因为可以跟上行业进展，但也指出行业内部对 AI 安全风险本身尚未达成共识。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/levie/status/2077201458546745553" class="source-link">↗ 代码的可测试性与 evals</a>
+      <a href="https://x.com/levie/status/2077043523703243070" class="source-link">↗ AI 标准机构提案</a>
+    </div>
+  </div>
+
+  <!-- Ryo Lu -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar pink">RL</div>
+        <div class="author-info">
+          <div class="author-name">Ryo Lu <span class="essay-badge">ESSAY</span></div>
+          <div class="author-role">Design，Cursor</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>发了一篇关于"当梦想变成工作"的长文，是今日最值得细读的内容。他写道：当你以热爱的事物为职业，它不再只属于你，而是与 deadline、团队、用户、策略绑在一起。现在还有了另一层：机器正在学会做那些"曾经证明你有特别之处"的工作。</p>
+      <div class="block-quote">"AI 可以让 output 更快，甚至能提高这项技艺的基准线。但它无法替你渴望，无法决定什么值得热爱，无法守护最初让你在乎的那根私密的线。"</div>
+      <p>他的核心观点：真正重要的不是你还能否手工完成每项任务，而是你与热爱的源头是否还保持着关系——那个没有观众、没有 roadmap、可以浪费时间、犯错、慢下来的地方。此文获得 800+ 赞，是一篇罕见地诚实谈论 AI 时代创作者心理的文章。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/ryolu_/status/2077162119506833627" class="source-link">↗ 阅读全文</a>
+      <a href="https://x.com/ryolu_/status/2077108336844210352" class="source-link">↗ Cursor 招聘 Design Eng</a>
+    </div>
+  </div>
+
+  <!-- Thariq -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar green">Th</div>
+        <div class="author-info">
+          <div class="author-name">Thariq <span class="new-badge">BUILD</span></div>
+          <div class="author-role">Claude Code，Anthropic</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>用 Claude Code 辅助打宝可梦对战（Pokemon Champions）：写代码调用 Smogon 的 npm 库，拉取实时用量统计，生成关于对阵关系、伤害断点和队伍理论的报告。还分享了他第一个公开 Artifact：一份对他的 Mega Sceptile 队的完整分析，并表示如果大家感兴趣会开源这套代码。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/trq212/status/2077051280267399550" class="source-link">↗ Claude Code × 宝可梦</a>
+      <a href="https://x.com/trq212/status/2077051282146431092" class="source-link">↗ 第一个公开 Artifact</a>
+    </div>
+  </div>
+
+  <!-- Guillermo Rauch -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">GR</div>
+        <div class="author-info">
+          <div class="author-name">Guillermo Rauch</div>
+          <div class="author-role">Vercel CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Vercel AI Gateway 开放了其 AI token 流量数据集，内含真实用量分布的有趣洞察。他还宣布 agentmail 现已与 Vercel 平台深度整合：在 agent 中直接运行 <code>vercel install agentmail</code>，无需注册账号，自动完成配置并统一计费。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/rauchg/status/2077176141790752798" class="source-link">↗ AI Gateway 数据集开放</a>
+      <a href="https://x.com/rauchg/status/2077154901013221444" class="source-link">↗ agentmail 集成</a>
+    </div>
+  </div>
+
+  <!-- Claude (Anthropic) -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar green">Cl</div>
+        <div class="author-info">
+          <div class="author-name">Claude <span class="new-badge">LAUNCH</span></div>
+          <div class="author-role">Anthropic 官方账号</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>发布了 Claude for Teachers，专为 K-12 课堂设计，符合 FERPA 隐私法规。功能亮点：输入你的州课程标准，Claude 通过 Learning Commons 连接高质量课程资源，起草课时计划和学生版教学材料，老师可在此基础上直接修改带入课堂。Anthropic 承诺不用教学对话训练模型，学生信息受数据处理协议保护。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/claudeai/status/2077047279689535705" class="source-link">↗ 功能介绍</a>
+      <a href="https://x.com/claudeai/status/2077047280767488218" class="source-link">↗ 隐私与 FERPA 合规</a>
+    </div>
+  </div>
+
+  <!-- Peter Steinberger -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">PS</div>
+        <div class="author-info">
+          <div class="author-name">Peter Steinberger</div>
+          <div class="author-role">OpenClaw 创始人</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>推荐在 agent 工作流中始终开启 autoreview，配图展示了 agent 在没有 review 步骤时搞砸的案例，并补了一句："是的，会烧 tokens，但能让你的神经平静下来。"另外他在试用 Suno AI 生成音乐，称"出货非常猛"。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/steipete/status/2077265627379843242" class="source-link">↗ autoreview 重要性</a>
+    </div>
+  </div>
+
+  <!-- Dan Shipper -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">DS</div>
+        <div class="author-info">
+          <div class="author-name">Dan Shipper</div>
+          <div class="author-role">Every CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>宣称 Every 在 6 个月前就已开始大力报道 Codex，言下之意是他们预判了这波爆发。他转发了一张展示 Codex 用量飞速增长的图，配文"success kid"表情包，暗示"我就说吧"。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/danshipper/status/2077196636971815135" class="source-link">↗ Every 预判 Codex 崛起</a>
+    </div>
+  </div>
+
+  <!-- Nikunj Kothari -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">NK</div>
+        <div class="author-info">
+          <div class="author-name">Nikunj Kothari</div>
+          <div class="author-role">FPV Ventures 合伙人</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>提出一个有趣观察：当 agents 在跑任务时，工程师们盯着屏幕等待，X 成了他们的多巴胺来源。他的预判：科技圈在 X 上的时间会持续增加，因为"等待 agents" 是一种全新的空闲状态。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/nikunj/status/2077144910508257317" class="source-link">↗ 查看推文</a>
+    </div>
+  </div>
+
+  <!-- PODCASTS -->
+  <div class="section-header">
+    <span class="section-label">播客</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="podcast-card">
+    <div class="podcast-badge">PODCAST · ANTHROPIC 内部视角</div>
+    <div class="podcast-show">Training Data</div>
+    <div class="podcast-title">Anthropic's Katelyn Lesse &amp; Angela Jiang: Building an Ecosystem, not a Walled Garden</div>
+    <div class="takeaway">核心观点：Anthropic Platform 团队正在从"执行层"向"协调层"迈进，未来的 alpha 不在于优化 prompt caching，而在于给 token 分配"职责"——这是 agent 工程的下一个量级。</div>
+    <div class="podcast-body">
+      <p>Angela Jiang（Platform 负责人）和 Katelyn Lesse（高级工程师）来自 Anthropic 最核心的基础设施团队，她们同时负责内部产品的底层基础设施，以及对外的 API 和开发者平台。这个双内外视角让她们的洞察格外有说服力。</p>
+
+      <p>她们把整个平台抽象成三层蛋糕：</p>
+      <p><strong>第一层：知识层（Knowledge）</strong> — 就是 Messages API、工具定义、MCP 等，告诉模型"怎么做事"。这层已经相对成熟。</p>
+      <p><strong>第二层：执行层（Execution）</strong> — Claude Managed Agents 所在的层。解决的是长期运行的基础设施问题：sandbox 治理、session 存储、context 管理、prompt caching。Angela 说的很直接：模型现在已经非常"可引导"，很多老式 harness 里负责"引导模型走直线"的脚手架代码可以直接删掉了。</p>
+      <p><strong>第三层：协调层（Coordination）</strong> — 她们花了最多时间讨论的地方。核心概念是 "strategies"（策略），也就是"给 token 分配职责"。同一个 token，你可以让它执行任务、让它回顾历史 agent session 并写入记忆、让它召唤更大的模型来"顾问"当前模型，或者让它在完成后作为"评分者"判断质量再决定是否重试。</p>
+
+      <div class="quote">"token 不是可互换的——你需要给它们不同的职责。这个 token 在建议，这个在执行，这个在做梦，这个在执行。你开始组合这些精心编排的策略，让它们协同工作。"</div>
+
+      <p>她们还分享了用户端的洞察：医疗行业有大量客户在用 computer use 桥接那些连 API 都没有的老系统；最激进的创新来自"AI native"的企业客户，而不是外部开发者；一个客户做了"把 MCP server 暴露在 agent 上层，让另一个 agent 把这个 agent 当工具调用"的架构，被她们称为"galaxy brain"方案，结果跑通了。</p>
+
+      <p>关于 token 成本优化（"tokenmaxxing → token rationalization"），她们的态度很清晰：不要靠设 cap 来限制 AI 使用，要靠设计更聪明的路由策略。困难任务给大模型，简单任务给便宜模型，这是未来 1-2 年企业部署 AI 的核心工程问题。Claude Tag 也在这次对话中被详细解读：它不只是一个 Slack bot，它是 Anthropic 对"org-level harness"的一次有主见的产品实验，核心是大量藏在水面下的 context engineering。</p>
+    </div>
+    <a href="https://www.youtube.com/watch?v=vPnVTHYplrQ" class="source-link">↗ 观看完整视频</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Generated through the Follow Builders skill: <a href="https://github.com/zarazhangrui/follow-builders">github.com/zarazhangrui/follow-builders</a></p>
+</div>
+
+</body>
+</html>

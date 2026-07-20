@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Builders Digest — 2026-07-20</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --border: #2a2d3a;
+    --accent: #6366f1;
+    --accent-soft: #818cf8;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --green: #34d399;
+    --yellow: #fbbf24;
+    --red: #f87171;
+    --tag-bg: #1e2235;
+    --pink: #f472b6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    padding: 0 0 80px;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 20px 22px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header h1 { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .header .date { font-size: 13px; color: var(--text-muted); }
+  .stats-bar {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .stat { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+  .stat span { color: var(--accent-soft); font-weight: 600; }
+  .main { max-width: 720px; margin: 0 auto; padding: 24px 20px 0; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 16px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--accent-soft);
+    text-transform: uppercase;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: #3a3d50; }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .author { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .avatar.green { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+  .avatar.orange { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+  .avatar.pink { background: linear-gradient(135deg, #be185d 0%, #ec4899 100%); }
+  .avatar.teal { background: linear-gradient(135deg, #0e7490 0%, #06b6d4 100%); }
+  .author-info { line-height: 1.3; }
+  .author-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .author-role { font-size: 12px; color: var(--text-muted); }
+  .card-body { font-size: 14px; color: var(--text); line-height: 1.7; }
+  .card-body p { margin-bottom: 8px; }
+  .card-body p:last-child { margin-bottom: 0; }
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--accent-soft);
+    text-decoration: none;
+    margin-top: 10px;
+    padding: 4px 10px;
+    background: var(--tag-bg);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .source-link:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .links-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .podcast-card {
+    background: linear-gradient(135deg, #1a1d27 0%, #1e2235 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .podcast-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--accent-soft);
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 10px;
+  }
+  .podcast-show { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .podcast-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
+  .takeaway {
+    background: rgba(99,102,241,0.1);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-soft);
+    line-height: 1.5;
+  }
+  .podcast-body { font-size: 14px; line-height: 1.75; color: var(--text); }
+  .podcast-body p { margin-bottom: 10px; }
+  .quote {
+    background: var(--tag-bg);
+    border-left: 3px solid var(--yellow);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 14px 0;
+    font-style: italic;
+    font-size: 14px;
+    color: #e2e8f0cc;
+    line-height: 1.6;
+  }
+  .footer {
+    max-width: 720px;
+    margin: 48px auto 0;
+    padding: 0 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .footer a { color: var(--accent-soft); text-decoration: none; }
+  .hot-badge {
+    font-size: 10px;
+    background: rgba(251,191,36,0.15);
+    color: var(--yellow);
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .new-badge {
+    font-size: 10px;
+    background: rgba(52,211,153,0.15);
+    color: var(--green);
+    border: 1px solid rgba(52,211,153,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .essay-badge {
+    font-size: 10px;
+    background: rgba(244,114,182,0.15);
+    color: var(--pink);
+    border: 1px solid rgba(244,114,182,0.3);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .block-quote {
+    background: rgba(244,114,182,0.07);
+    border-left: 3px solid var(--pink);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 13.5px;
+    color: #e2e8f0cc;
+    line-height: 1.65;
+    font-style: italic;
+  }
+  @media (max-width: 500px) {
+    .header { padding: 18px 16px 14px; }
+    .main { padding: 16px 16px 0; }
+    .card { padding: 14px 16px; }
+    .podcast-card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>AI Builders Digest</h1>
+    <span class="date">2026年7月20日</span>
+  </div>
+  <div class="stats-bar">
+    <div class="stat">追踪 <span>11</span> 位 builder</div>
+    <div class="stat">推文 <span>23</span> 条</div>
+    <div class="stat">播客 <span>1</span> 期</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- X / TWITTER -->
+  <div class="section-header">
+    <span class="section-label">X / Twitter</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Thibault Sottiaux -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">TS</div>
+        <div class="author-info">
+          <div class="author-name">Thibault Sottiaux <span class="new-badge">WORK</span></div>
+          <div class="author-role">Codex & ChatGPT，OpenAI</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>展示了自己如何用 ChatGPT Work 完全替代自己的工作：用语音口述了一个复杂任务——从数千条 Twitter 私信中筛选出提到 ChatGPT Work 的，整理进电子表格，按职业自动分类（8-12 个标签），并给每位申请者的工作流成熟度打分，以便挑出多元层次的 beta 测试用户组。他感叹道："我的工作基本上就是把事情委托给 ChatGPT Work 了，语音输入已经停不下来了。"</p>
+      <p>同日他也正式介绍了 ChatGPT Work 的核心功能：建站与托管、代为管理邮件、处理海量文档、生成高质量文档/表格/幻灯片，已包含在 Plus、Pro、Business 和 Enterprise 套餐中。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/thsottiaux/status/2078702412085498087" class="source-link">↗ 语音委托演示</a>
+      <a href="https://x.com/thsottiaux/status/2078697741455356367" class="source-link">↗ 工作全委托给 Work</a>
+      <a href="https://x.com/thsottiaux/status/2078697631019303273" class="source-link">↗ ChatGPT Work 功能介绍</a>
+    </div>
+  </div>
+
+  <!-- Thariq -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar green">Th</div>
+        <div class="author-info">
+          <div class="author-name">Thariq <span class="hot-badge">HOT</span></div>
+          <div class="author-role">Claude Code，Anthropic</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>为 Claude Fable 的上线专门致谢了幕后团队："这是靠很多人的英雄级努力才做到的，有时候真的是字面意义上的通宵工作。我们一度完全不确定能否按时完成，为每一位做到这件事的人感到骄傲。"这条推文获得 6700+ 赞，也透露出 Fable 的发布并非顺理成章的迭代，而是一次险些未能完成的攻坚战。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/trq212/status/2078514180051906864" class="source-link">↗ Fable 发布致谢</a>
+    </div>
+  </div>
+
+  <!-- Guillermo Rauch -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">GR</div>
+        <div class="author-info">
+          <div class="author-name">Guillermo Rauch <span class="essay-badge">EVALS</span></div>
+          <div class="author-role">Vercel CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>发布了 Vercel 内部对多款模型的网络安全能力 stealth eval 结果：Kimi K3 在安全领域属顶级（有人说它 benchmark 过拟合，Vercel 的内部数据不支持这一说法）；Sol 在安全能力上有跨代提升，但成本明显更高；Fable 则"拒绝了所有任务"，连这套评测都没能跑完——相比之下，Sol 在防御性安全加固场景中更为配合。</p>
+      <p>另一条长文更有分量：他认为"AGI"这个词已经过时，对绝大多数经济相关任务而言 AI 已经远优于人类智能，更准确的叫法应该是"超级智能"。但这并不意味着 AI 比人类更好——人类对彼此有一种内在的、机器只能模仿的关怀。他的警告：如果你把写作、独特想法和创意全部外包给 AI，你将亲手抹去让自己不可替代的东西。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/rauchg/status/2078647648307880209" class="source-link">↗ 模型安全能力 evals</a>
+      <a href="https://x.com/rauchg/status/2078548458714406959" class="source-link">↗ AGI 已是过时概念</a>
+    </div>
+  </div>
+
+  <!-- Aaron Levie -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar teal">AL</div>
+        <div class="author-info">
+          <div class="author-name">Aaron Levie</div>
+          <div class="author-role">Box CEO</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>写了一篇 AI 生态系统结构分析，认为过去几个月是重要转折点——AI 的价值绝不只会集中在少数几家公司手中。他列出了五个当前正在跑通的赛道：①帮企业微调专属模型并运行推理的服务商；②面向最终用户和业务流程的应用 AI 公司（法律、IT、安全、HR、客服、编码等）；③聚焦垂直领域的专业 AI 实验室（生命科学、金融、医疗）；④新基础设施层（运行 agents、保护数据、编排活动）；⑤企业 AI 落地服务公司。他的结论："每一层都有机会，这不是零和游戏，现在宣布谁赢了为时过早。"</p>
+      <p>另一条谈中美 AI 竞争：封锁模型的做法根本行不通，因为中国已能在接近前沿的水平竞争（如 Kimi K3）。正确做法是安全地保持高速进步、推动技术扩散、支持开源，而不是收紧管控。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/levie/status/2078567715544121815" class="source-link">↗ AI 生态系统五大赛道</a>
+      <a href="https://x.com/levie/status/2078481578779685245" class="source-link">↗ 封锁模型行不通</a>
+    </div>
+  </div>
+
+  <!-- Matt Turck -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">MT</div>
+        <div class="author-info">
+          <div class="author-name">Matt Turck</div>
+          <div class="author-role">FirstMark Capital，MAD Podcast 主持人</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>一条简洁有力的三年总结："2024年：'模型层正在商品化'。2025年：'模型层正在商品化'。2026年：'模型层正在商品化'。模型层：依然没有商品化。"简短，但精准戳破了过去三年被反复引用却一再落空的预测。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/mattturck/status/2078520552680046920" class="source-link">↗ 模型层三年没商品化</a>
+    </div>
+  </div>
+
+  <!-- Zara Zhang -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar pink">ZZ</div>
+        <div class="author-info">
+          <div class="author-name">Zara Zhang</div>
+          <div class="author-role">Builder</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>两条都值得关注。第一条建议每个人为 AI 模型建立自己的"个人 eval 集"——几个真实反映日常工作的任务，而不是只看行业 benchmark；找到模型的能力边界要靠自己去戳，去碰壁。第二条直指企业 AI 落地的核心障碍："懂 AI 的人不懂业务，懂业务的人不懂 AI"——这个判断简洁得令人不安，但几乎所有在企业里推 AI 的人都会点头。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/zarazhangrui/status/2078666187026911488" class="source-link">↗ 建立个人 eval 集</a>
+      <a href="https://x.com/zarazhangrui/status/2078492577788268549" class="source-link">↗ 企业 AI 落地的核心障碍</a>
+    </div>
+  </div>
+
+  <!-- Swyx -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar">Sw</div>
+        <div class="author-info">
+          <div class="author-name">Swyx</div>
+          <div class="author-role">AI Engineer，Cognition & Temporal</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>指出批评欧洲 AI 生态的人往往忽略了欧洲有一批顶尖 AI 工程师——只要你知道如何找到他们。他们正在主办目前竞争最激烈的全球 AI 人才竞技场（以讲座和工作坊数量衡量），他认为接下来进入评估窗口后会很有看头。另外他还预测，按当前增速，AEO（AI Engine Optimization）明年将为他带来超过 100 万美元的收入。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/swyx/status/2078628617987518855" class="source-link">↗ 欧洲顶尖 AI 工程师</a>
+      <a href="https://x.com/swyx/status/2078581967768166591" class="source-link">↗ AEO 带来 $1M 收入</a>
+    </div>
+  </div>
+
+  <!-- Peter Yang -->
+  <div class="card">
+    <div class="card-header">
+      <div class="author">
+        <div class="avatar orange">PY</div>
+        <div class="author-info">
+          <div class="author-name">Peter Yang <span class="new-badge">BUILD</span></div>
+          <div class="author-role">AI 教育博主</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>带着他 8 岁的女儿用 ChatGPT Work 建了一个学乘法表的互动网站：用 ChatGPT Images 生成动物角色和 UI，加入了音乐，还有限时 boss 关卡，公开可玩。这是一个用 AI 辅助亲子教育的真实案例，也是"孩子学会用 AI 动手做东西"的一个缩影。</p>
+    </div>
+    <div class="links-row">
+      <a href="https://x.com/petergyang/status/2078638568784994686" class="source-link">↗ 女儿学乘法表的 AI 网站</a>
+    </div>
+  </div>
+
+  <!-- PODCASTS -->
+  <div class="section-header">
+    <span class="section-label">播客</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="podcast-card">
+    <div class="podcast-badge">PODCAST · AI 先驱视角</div>
+    <div class="podcast-show">Unsupervised Learning</div>
+    <div class="podcast-title">Ep 90: AI Pioneer Jürgen Schmidhuber on the State of AI Today</div>
+    <div class="takeaway">核心观点：当前的 AI CapEx 热潮是严重过度投资，封闭模型公司没有护城河，而真正的 AGI 必须有肉身——屏幕后面的智能不算 AGI。</div>
+    <div class="podcast-body">
+      <p>Jürgen Schmidhuber 被《纽约时报》和《福布斯》称为"AI 之父"，是 LSTM 和元学习的奠基人，1970 年代就立下目标：建造比自己更聪明的 AI，至今仍在做同一件事。今天正当红的大语言模型热潮，对他来说"并不惊讶"——他早就在那条路上了。</p>
+
+      <p>对当前 CapEx 热潮，他给出了一个异常清醒的判断：每五年计算能力提升约 10 倍，意味着今天砸进数据中心的数千亿美元，五年后会贬值 90%。而开源模型又持续压制定价空间，让封闭模型公司的自由现金流急速下滑。他的建议："等五年，同样的事情可以用 1/10 的成本完成；等十年，只需 1/100。" 他预计会出现一次股市层面的重新定价，而非文明级的崩溃。</p>
+
+      <p>他对"递归自我改进会是护城河"的说法也持怀疑态度：RSI 领域最重要的算法全都来自小型学术实验室，任何大公司都无法将这些想法据为己有——因为满世界都是对此充满热情的博士生，短暂优势无法持续到盈利。</p>
+
+      <p>他还提出了一个关于当前 LLM 局限的深刻观察：今天的大模型极度"以人为中心"，因为训练数据全部来自互联网，而互联网上每一条内容，都是至少有一个人认为值得记录的。真正的 AI 未来在于系统通过"人工好奇心"（他 1990 年提出的概念）自主收集训练数据——像婴儿一样通过行动探索世界，而不依赖任何人类过滤过的数据集。</p>
+
+      <div class="quote">"在宇宙视角下，曾经没有任何自我改进和真正的 AI，然后突然就有了。这就是一根棍子。但从活在这个时代的人的视角看，正在发生的事情非常之多。"</div>
+
+      <p>在 AI 安全问题上，他比同行更为乐观：试图给 AI 一个固定目标函数来"对齐"本质上是幼稚的，因为他在 1990 年代就在构建会自己重新发明目标的系统。军事 AI 早已在实战中互相对抗，根本谈不上对齐。他认为真正的保护来自另一个方向：超级智能的 AI 将是"人工科学家"，它们会对生命和文明本身着迷，因此天然有动力保护这一切，而非摧毁它。</p>
+    </div>
+    <a href="https://www.youtube.com/watch?v=RKjR8DQ40po" class="source-link">↗ 观看完整视频</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>Generated through the Follow Builders skill: <a href="https://github.com/zarazhangrui/follow-builders">github.com/zarazhangrui/follow-builders</a></p>
+</div>
+
+</body>
+</html>
